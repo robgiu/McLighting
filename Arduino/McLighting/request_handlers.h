@@ -465,6 +465,47 @@ void mqtt_callback(char* topic, byte* payload_in, unsigned int length) {
   payload[length] = NULL;
   DBG_OUTPUT_PORT.printf("MQTT: Message arrived [%s]\n", payload);
 
+
+  // ROBERTO
+  if (payload[0] == 'L') {
+    uint8_t l = (uint8_t) strtol((const char *) &payload[1], NULL, 10);
+    int led  = constrain(l, 0, 3);
+    DBG_OUTPUT_PORT.printf("MQTT: Led is [%d]\n", led);
+    // led l ON
+    int x = ledMgmt[MY_ID][led];
+    switch (x) {
+      case 1 :
+        digitalWrite(LEDA, 1);
+        break;
+      case 2 :
+        digitalWrite(LEDB, 1);
+        break;
+      case 3 :
+        digitalWrite(LEDC, 1);
+        break;        
+    }
+    mqtt_client.publish(mqtt_outtopic, String(String((char *)payload)).c_str());
+  }
+
+ if (payload[0] == 'N') {
+    uint8_t l = (uint8_t) strtol((const char *) &payload[1], NULL, 10);
+    int led  = constrain(l, 0, 3);
+    // led l OFF
+    int x = ledMgmt[MY_ID][led];
+    switch (x) {
+      case 1:
+        digitalWrite(LEDA, 0);
+        break;
+      case 2 :
+        digitalWrite(LEDB, 0);
+        break;
+      case 3 :
+        digitalWrite(LEDC, 0);
+        break;        
+    }
+    mqtt_client.publish(mqtt_outtopic, String(String((char *)payload)).c_str());
+  }
+
   // # ==> Set main color
   if (payload[0] == '#') {
     handleSetMainColor(payload);
@@ -522,7 +563,7 @@ void mqtt_callback(char* topic, byte* payload_in, unsigned int length) {
     String str_mode = String((char *) &payload[0]);
     handleSetNamedMode(str_mode);
     DBG_OUTPUT_PORT.printf("MQTT: Activate named mode [%s]\n", payload);
-    mqtt_client.publish(mqtt_outtopic, String(String("OK ") + String((char *)payload)).c_str());
+    mqtt_client.publish(mqtt_outtopic, String(String((char *)payload)).c_str());
   }
 
   // $ ==> Get status Info.
@@ -549,7 +590,7 @@ void mqtt_callback(char* topic, byte* payload_in, unsigned int length) {
   if (payload[0] == '/') {
     handleSetWS2812FXMode(payload);
     DBG_OUTPUT_PORT.printf("MQTT: Set WS2812 mode [%s]\n", payload);
-    mqtt_client.publish(mqtt_outtopic, String(String("OK ") + String((char *)payload)).c_str());
+    mqtt_client.publish(mqtt_outtopic, String(String(MY_ID) +" " + String((char *)payload)).c_str());
   }
 
   free(payload);
@@ -598,13 +639,13 @@ void shortKeyPress() {
     setModeByStateString(BTN_MODE_SHORT);
     buttonState = true;
 	    #ifdef ENABLE_MQTT
-      mqtt_client.publish(mqtt_outtopic, String("OK =static white").c_str());
+      mqtt_client.publish(mqtt_outtopic, String(String(MY_ID) + String(" /0")).c_str());
     #endif
   } else {
     mode = OFF;
     buttonState = false;
     #ifdef ENABLE_MQTT
-        mqtt_client.publish(mqtt_outtopic, String("OK =off").c_str());
+        mqtt_client.publish(mqtt_outtopic, String("=off").c_str());
     #endif
   }
 }
@@ -615,7 +656,7 @@ void mediumKeyPress() {
   setModeByStateString(BTN_MODE_MEDIUM);
   buttonState = true;
   #ifdef ENABLE_MQTT
-    mqtt_client.publish(mqtt_outtopic, String("OK =fire flicker").c_str());
+    mqtt_client.publish(mqtt_outtopic, String(String(MY_ID) + String(" /48")).c_str());
   #endif
 }
 
@@ -625,7 +666,7 @@ void longKeyPress() {
   setModeByStateString(BTN_MODE_LONG);
   buttonState = true;
   #ifdef ENABLE_MQTT
-    mqtt_client.publish(mqtt_outtopic, String("OK =fireworks random").c_str());
+    mqtt_client.publish(mqtt_outtopic, String(String(MY_ID) + String(" /46")).c_str());
   #endif
 }
 
