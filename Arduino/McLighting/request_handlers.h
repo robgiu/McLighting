@@ -519,7 +519,8 @@ void mqtt_callback(char* topic, byte* payload_in, unsigned int length) {
     ws2812fx_speed = constrain(d, 0, 255);
     strip.setSpeed(convertSpeed(ws2812fx_speed));
     DBG_OUTPUT_PORT.printf("MQTT: Set speed to [%u]\n", ws2812fx_speed);
-    mqtt_client.publish(mqtt_outtopic, String(String("OK ") + String((char *)payload)).c_str());
+    // ROBERTO
+    // mqtt_client.publish(mqtt_outtopic, String(String("OK ") + String((char *)payload)).c_str());
   }
 
   // % ==> Set brightness
@@ -528,34 +529,39 @@ void mqtt_callback(char* topic, byte* payload_in, unsigned int length) {
     brightness = constrain(b, 0, 255);
     strip.setBrightness(brightness);
     DBG_OUTPUT_PORT.printf("MQTT: Set brightness to [%u]\n", brightness);
-    mqtt_client.publish(mqtt_outtopic, String(String("OK ") + String((char *)payload)).c_str());
+    // ROBERTO
+    //     mqtt_client.publish(mqtt_outtopic, String(String("OK ") + String((char *)payload)).c_str());
   }
 
   // * ==> Set main color and light all LEDs (Shortcut)
   if (payload[0] == '*') {
     handleSetAllMode(payload);
     DBG_OUTPUT_PORT.printf("MQTT: Set main color and light all LEDs [%s]\n", payload);
-    mqtt_client.publish(mqtt_outtopic, String(String("OK ") + String((char *)payload)).c_str());
+    // ROBERTO
+    //     mqtt_client.publish(mqtt_outtopic, String(String("OK ") + String((char *)payload)).c_str());
   }
 
   // ! ==> Set single LED in given color
   if (payload[0] == '!') {
     handleSetSingleLED(payload, 1);
     DBG_OUTPUT_PORT.printf("MQTT: Set single LED in given color [%s]\n", payload);
-    mqtt_client.publish(mqtt_outtopic, String(String("OK ") + String((char *)payload)).c_str());
+    // ROBERTO
+    //     mqtt_client.publish(mqtt_outtopic, String(String("OK ") + String((char *)payload)).c_str());
   }
 
   // + ==> Set multiple LED in the given colors
   if (payload[0] == '+') {
     handleSetDifferentColors(payload);
-    mqtt_client.publish(mqtt_outtopic, String(String("OK ") + String((char *)payload)).c_str());
+    // ROBERTO
+    //     mqtt_client.publish(mqtt_outtopic, String(String("OK ") + String((char *)payload)).c_str());
   }
 
   // R ==> Set range of LEDs in the given colors
   if (payload[0] == 'R') {
     handleRangeDifferentColors(payload);
     DBG_OUTPUT_PORT.printf("MQTT: Set range of LEDS to single color: [%s]\n", payload);
-    mqtt_client.publish(mqtt_outtopic, String(String("OK ") + String((char *)payload)).c_str());
+    // ROBERTO
+    //     mqtt_client.publish(mqtt_outtopic, String(String("OK ") + String((char *)payload)).c_str());
   }
 
   // = ==> Activate named mode
@@ -563,13 +569,15 @@ void mqtt_callback(char* topic, byte* payload_in, unsigned int length) {
     String str_mode = String((char *) &payload[0]);
     handleSetNamedMode(str_mode);
     DBG_OUTPUT_PORT.printf("MQTT: Activate named mode [%s]\n", payload);
-    mqtt_client.publish(mqtt_outtopic, String(String((char *)payload)).c_str());
+    // ROBERTO
+    //     mqtt_client.publish(mqtt_outtopic, String(String((char *)payload)).c_str());
   }
 
   // $ ==> Get status Info.
   if (payload[0] == '$') {
     DBG_OUTPUT_PORT.printf("MQTT: Get status info.\n");
-    mqtt_client.publish(mqtt_outtopic, listStatusJSON());
+    // ROBERTO
+    //     mqtt_client.publish(mqtt_outtopic, listStatusJSON());
   }
 
   // ~ ==> Get WS2812 modes.
@@ -578,7 +586,8 @@ void mqtt_callback(char* topic, byte* payload_in, unsigned int length) {
   if (payload[0] == '~') {
     DBG_OUTPUT_PORT.printf("MQTT: Get WS2812 modes.\n");
     DBG_OUTPUT_PORT.printf("Error: Not implemented. Message too large for pubsubclient.");
-    mqtt_client.publish(mqtt_outtopic, "ERROR: Not implemented. Message too large for pubsubclient.");
+    // ROBERTO
+    //     mqtt_client.publish(mqtt_outtopic, "ERROR: Not implemented. Message too large for pubsubclient.");
     //String json_modes = listModesJSON();
     //DBG_OUTPUT_PORT.printf(json_modes.c_str());
 
@@ -590,7 +599,8 @@ void mqtt_callback(char* topic, byte* payload_in, unsigned int length) {
   if (payload[0] == '/') {
     handleSetWS2812FXMode(payload);
     DBG_OUTPUT_PORT.printf("MQTT: Set WS2812 mode [%s]\n", payload);
-    mqtt_client.publish(mqtt_outtopic, String(String(MY_ID) +" " + String((char *)payload)).c_str());
+    // ROBERTO
+    //     mqtt_client.publish(mqtt_outtopic, String(String(MY_ID) +" " + String((char *)payload)).c_str());
   }
 
   free(payload);
@@ -608,7 +618,8 @@ void mqtt_reconnect() {
       char * message = new char[18 + strlen(HOSTNAME) + 1];
       strcpy(message, "McLighting ready: ");
       strcat(message, HOSTNAME);
-      mqtt_client.publish(mqtt_outtopic, message);
+      // ROBERTO
+      // mqtt_client.publish(mqtt_outtopic, message);
       // ... and resubscribe
       mqtt_client.subscribe(mqtt_intopic);
 
@@ -639,7 +650,9 @@ void shortKeyPress() {
     setModeByStateString(BTN_MODE_SHORT);
     buttonState = true;
 	    #ifdef ENABLE_MQTT
-      mqtt_client.publish(mqtt_outtopic, String(String(MY_ID) + String(" /0")).c_str());
+      // ROBERTO
+      // mqtt_client.publish(mqtt_outtopic, String(String(MY_ID) + String(" /0")).c_str());
+      mqtt_client.publish(mqtt_outtopic, String(String("/0")).c_str());
     #endif
   } else {
     mode = OFF;
@@ -656,7 +669,9 @@ void mediumKeyPress() {
   setModeByStateString(BTN_MODE_MEDIUM);
   buttonState = true;
   #ifdef ENABLE_MQTT
-    mqtt_client.publish(mqtt_outtopic, String(String(MY_ID) + String(" /48")).c_str());
+    // ROBERTO
+    // mqtt_client.publish(mqtt_outtopic, String(String(MY_ID) + String(" /48")).c_str());
+    mqtt_client.publish(mqtt_outtopic, String(String(" /48")).c_str());
   #endif
 }
 
@@ -666,7 +681,9 @@ void longKeyPress() {
   setModeByStateString(BTN_MODE_LONG);
   buttonState = true;
   #ifdef ENABLE_MQTT
-    mqtt_client.publish(mqtt_outtopic, String(String(MY_ID) + String(" /46")).c_str());
+    // ROBERTO
+    // mqtt_client.publish(mqtt_outtopic, String(String(MY_ID) + String(" /46")).c_str());
+    mqtt_client.publish(mqtt_outtopic, String(String(" /46")).c_str());
   #endif
 }
 
