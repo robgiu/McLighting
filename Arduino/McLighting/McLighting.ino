@@ -175,6 +175,13 @@ void setup() {
 
   // set builtin led pin as output
   pinMode(BUILTIN_LED, OUTPUT);
+
+  // ROBERTO
+  // led setup
+  pinMode(LEDA, OUTPUT);  
+  pinMode(LEDB, OUTPUT); 
+  pinMode(LEDC, OUTPUT); 
+  
   // button pin setup
 #ifdef ENABLE_BUTTON
   pinMode(BUTTON,INPUT_PULLUP);
@@ -203,7 +210,7 @@ void setup() {
   #ifdef ENABLE_MQTT
     String settings_available = readEEPROM(134, 1);
     if (settings_available == "1") {
-      readEEPROM(0, 64).toCharArray(mqtt_host, 64);   // 0-63
+ //     readEEPROM(0, 64).toCharArray(mqtt_host, 64);   // 0-63
       readEEPROM(64, 6).toCharArray(mqtt_port, 6);    // 64-69
       readEEPROM(70, 32).toCharArray(mqtt_user, 32);  // 70-101
       readEEPROM(102, 32).toCharArray(mqtt_pass, 32); // 102-133
@@ -237,6 +244,9 @@ void setup() {
     wifiManager.addParameter(&custom_mqtt_user);
     wifiManager.addParameter(&custom_mqtt_pass);
   #endif
+
+// ROBERTO
+wifiManager.setSTAStaticIPConfig(IPAddress(MY_IP), IPAddress(MY_GATEWAY), IPAddress(MY_NETWORK));
 
   //fetches ssid and pass and tries to connect
   //if it does not connect it starts an access point with the specified name
@@ -322,6 +332,10 @@ void setup() {
   // Configure MQTT
   // ***************************************************************************
   #ifdef ENABLE_MQTT
+      DBG_OUTPUT_PORT.printf("MQTT host: %s\n", mqtt_host);
+      DBG_OUTPUT_PORT.printf("MQTT port: %s\n", mqtt_port);
+      DBG_OUTPUT_PORT.printf("MQTT user: %s\n", mqtt_user);
+      DBG_OUTPUT_PORT.printf("MQTT pass: %s\n", mqtt_pass);
     if (mqtt_host != "" && String(mqtt_port).toInt() > 0) {
       snprintf(mqtt_intopic, sizeof mqtt_intopic, "%s/in", HOSTNAME);
       snprintf(mqtt_outtopic, sizeof mqtt_outtopic, "%s/out", HOSTNAME);
@@ -686,3 +700,4 @@ void loop() {
     }
   #endif
 }
+
