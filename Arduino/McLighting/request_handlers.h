@@ -484,7 +484,7 @@ void mqtt_callback(char* topic, byte* payload_in, unsigned int length) {
         digitalWrite(LEDC, 1);
         break;        
     }
-    mqtt_client.publish(mqtt_outtopic, String(String((char *)payload)).c_str());
+    // mqtt_client.publish(mqtt_outtopic, String(String((char *)payload)).c_str());
   }
 
  if (payload[0] == 'N') {
@@ -503,14 +503,15 @@ void mqtt_callback(char* topic, byte* payload_in, unsigned int length) {
         digitalWrite(LEDC, 0);
         break;        
     }
-    mqtt_client.publish(mqtt_outtopic, String(String((char *)payload)).c_str());
+    // mqtt_client.publish(mqtt_outtopic, String(String((char *)payload)).c_str());
   }
 
   // # ==> Set main color
   if (payload[0] == '#') {
     handleSetMainColor(payload);
     DBG_OUTPUT_PORT.printf("MQTT: Set main color to [%u] [%u] [%u]\n", main_color.red, main_color.green, main_color.blue);
-    mqtt_client.publish(mqtt_outtopic, String(String("OK ") + String((char *)payload)).c_str());
+    // ROBERTO
+    // mqtt_client.publish(mqtt_outtopic, String(String("OK ") + String((char *)payload)).c_str());
   }
 
   // ? ==> Set speed
