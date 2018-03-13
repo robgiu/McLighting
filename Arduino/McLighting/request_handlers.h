@@ -653,13 +653,15 @@ void shortKeyPress() {
 	    #ifdef ENABLE_MQTT
       // ROBERTO
       // mqtt_client.publish(mqtt_outtopic, String(String(MY_ID) + String(" /0")).c_str());
-      mqtt_client.publish(mqtt_outtopic, String(String("/0")).c_str());
+      mqtt_client.publish(mqtt_outtopic, String(String("/0")).c_str())
+      mqtt_client.publish(mqtt_outtopic, String(String(LMESSAGE)).c_str());
     #endif
   } else {
     mode = OFF;
     buttonState = false;
     #ifdef ENABLE_MQTT
         mqtt_client.publish(mqtt_outtopic, String("=off").c_str());
+        mqtt_client.publish(mqtt_outtopic, String(String(NMESSAGE)).c_str());
     #endif
   }
 }
@@ -673,6 +675,7 @@ void mediumKeyPress() {
     // ROBERTO
     // mqtt_client.publish(mqtt_outtopic, String(String(MY_ID) + String(" /48")).c_str());
     mqtt_client.publish(mqtt_outtopic, String(String(" /48")).c_str());
+    mqtt_client.publish(mqtt_outtopic, String(String(LMESSAGE)).c_str());
   #endif
 }
 
@@ -685,6 +688,7 @@ void longKeyPress() {
     // ROBERTO
     // mqtt_client.publish(mqtt_outtopic, String(String(MY_ID) + String(" /46")).c_str());
     mqtt_client.publish(mqtt_outtopic, String(String(" /46")).c_str());
+    mqtt_client.publish(mqtt_outtopic, String(String(LMESSAGE)).c_str());
   #endif
 }
 
